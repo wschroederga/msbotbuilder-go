@@ -40,6 +40,7 @@ import (
 type Client interface {
 	Post(url url.URL, activity schema.Activity) error
 	Delete(url url.URL, activity schema.Activity) error
+	Put(url url.URL, activity schema.Activity) error
 }
 
 // ConnectorClient implements Client to send HTTP requests to the connector service.
@@ -56,6 +57,22 @@ func NewClient(config *Config) (Client, error) {
 	}
 
 	return &ConnectorClient{*config, cache.AuthCache{}}, nil
+}
+
+// Put an activity to given URL to update activity.
+//
+// Creates a HTTP PUT request with the provided activity as the body and a Bearer token in the header.
+// Returns any error as received from the call to connector service.
+func (client *ConnectorClient) Put(target url.URL, activity schema.Activity) error {
+	jsonStr, err := json.Marshal(activity)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequest(http.MethodPut, target.String(), bytes.NewBuffer(jsonStr))
+	if err != nil {
+		return err
+	}
+	return client.sendRequest(req, activity)
 }
 
 // Post an activity to given URL.
