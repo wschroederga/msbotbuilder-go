@@ -28,8 +28,8 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/infracloudio/msbotbuilder-go/connector/cache"
-	"github.com/infracloudio/msbotbuilder-go/schema"
+	"github.com/wschroederga/msbotbuilder-go/connector/cache"
+	"github.com/wschroederga/msbotbuilder-go/schema"
 	"github.com/lestrrat-go/jwx/jwk"
 )
 
