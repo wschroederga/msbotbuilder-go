@@ -107,10 +107,12 @@ func (jv *JwtTokenValidator) getIdentity(authHeader string) (ClaimsIdentity, err
 			return nil, errors.New("Expecting JWT header to have string kid")
 		}
 		// Return cached JWKs
-		if key := jv.AuthCache.Keys.(jwk.Set).LookupKeyID(keyID); len(key) == 1 {
-			return key[0].Materialize()
+		if keys := jv.AuthCache.Keys.(jwk.Set).LookupKeyID(keyID); len(keys) == 1 {
+			var key interface{}
+			if err := keys[0].Raw(&key); err == nil {
+				return key, nil
+			}
 		}
-
 		return nil, errors.New("Could not find public key")
 	}
 
